@@ -2,6 +2,7 @@ import { motion, useMotionValue, useTransform, useSpring } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, Zap, Code, Cpu } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import ConstellationReveal from "./ConstellationReveal"
 
 const FloatingIcon = ({ icon: Icon, delay, x, y }: { icon: any, delay: number, x: number, y: number }) => (
   <motion.div
@@ -94,7 +95,10 @@ export default function Hero() {
         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
       />
 
-      <div className="container mx-auto px-6 py-24 text-center relative z-10">
+      {/* Interactive Constellation Background */}
+      <ConstellationReveal />
+
+      <div className="container mx-auto px-6 py-24 text-center relative z-20">
         <motion.div
           className="max-w-6xl mx-auto"
           style={{ rotateX, rotateY, transformPerspective: 1000 }}
