@@ -1,11 +1,11 @@
-import { motion } from "framer-motion"
+import { motion, useSpring, useMotionValue, useTransform } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef, useState } from "react"
 import CourseCard from "./CourseCard"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter } from "lucide-react"
+import { Search, Filter, Sparkles, Brain, Zap } from "lucide-react"
 import { 
   Code2, 
   Database, 
@@ -113,8 +113,10 @@ const categories = ["all", "fundamentals", "development", "security", "data", "c
 const levels = ["all", "Beginner", "Intermediate", "Advanced"]
 
 export default function Courses() {
-  const ref = useRef(null)
+  const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
   
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
@@ -136,72 +138,298 @@ export default function Courses() {
     // todo: remove mock functionality - implement real enrollment
   }
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = ref.current?.getBoundingClientRect()
+    if (rect) {
+      mouseX.set((e.clientX - rect.left - rect.width / 2) / 15)
+      mouseY.set((e.clientY - rect.top - rect.height / 2) / 15)
+    }
+  }
+
+  const FloatingBrainIcon = ({ delay, x, y }: { delay: number, x: number, y: number }) => (
+    <motion.div
+      className="absolute text-primary/15"
+      style={{ left: `${x}%`, top: `${y}%` }}
+      animate={{
+        y: [0, -30, 0],
+        rotate: [0, 360],
+        scale: [1, 1.2, 1],
+        opacity: [0.15, 0.4, 0.15]
+      }}
+      transition={{
+        duration: 12,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    >
+      <Brain className="h-6 w-6" />
+    </motion.div>
+  )
+
   return (
-    <section id="courses" className="py-24 bg-card">
-      <div className="container mx-auto px-6">
+    <section 
+      id="courses" 
+      className="py-32 bg-gradient-to-br from-card/80 via-card to-background/50 relative overflow-hidden"
+      onMouseMove={handleMouseMove}
+    >
+      {/* Floating AI Brain Icons */}
+      <FloatingBrainIcon delay={0} x={8} y={15} />
+      <FloatingBrainIcon delay={3} x={92} y={25} />
+      <FloatingBrainIcon delay={6} x={10} y={75} />
+      <FloatingBrainIcon delay={2} x={88} y={85} />
+      <FloatingBrainIcon delay={4} x={50} y={5} />
+
+      {/* Advanced Neural Network Pattern */}
+      <motion.div 
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: 'linear-gradient(45deg, transparent 40%, rgba(59, 130, 246, 0.1) 50%, transparent 60%), linear-gradient(-45deg, transparent 40%, rgba(147, 51, 234, 0.1) 50%, transparent 60%)',
+          backgroundSize: '80px 80px'
+        }}
+        animate={{
+          backgroundPosition: ['0px 0px, 0px 0px', '80px 80px, -80px -80px']
+        }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+      />
+
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 60 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="text-center mb-20"
+          style={{
+            x: useTransform(mouseX, [-50, 50], [-8, 8]),
+            y: useTransform(mouseY, [-50, 50], [-8, 8])
+          }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-card-foreground mb-6" data-testid="text-courses-title">
-            Our Courses
-          </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-12" data-testid="text-courses-description">
-            Explore our comprehensive curriculum designed to take you from beginner to expert in operating system development.
-          </p>
+          <motion.div className="inline-flex items-center gap-4 mb-8">
+            <motion.div
+              animate={{
+                rotate: [0, 360],
+                scale: [1, 1.3, 1],
+                filter: [
+                  "hue-rotate(0deg)",
+                  "hue-rotate(180deg)", 
+                  "hue-rotate(360deg)"
+                ]
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Sparkles className="h-10 w-10 text-primary" />
+            </motion.div>
+            <motion.span 
+              className="text-sm uppercase tracking-[0.4em] text-primary font-black"
+              initial={{ opacity: 0, letterSpacing: "1.5em" }}
+              animate={isInView ? { opacity: 1, letterSpacing: "0.4em" } : {}}
+              transition={{ duration: 2, delay: 0.3 }}
+            >
+              AI-Enhanced Learning Platform
+            </motion.span>
+            <motion.div
+              animate={{
+                rotate: [360, 0],
+                scale: [1, 1.3, 1],
+                filter: [
+                  "hue-rotate(360deg)",
+                  "hue-rotate(180deg)", 
+                  "hue-rotate(0deg)"
+                ]
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+            >
+              <Brain className="h-10 w-10 text-primary" />
+            </motion.div>
+          </motion.div>
+          
+          <motion.h2 
+            className="text-6xl md:text-8xl font-black text-card-foreground mb-8 leading-tight tracking-tight"
+            data-testid="text-courses-title"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+          >
+            Neural{" "}
+            <motion.span 
+              className="bg-gradient-to-r from-primary via-purple-400 via-blue-400 to-primary bg-clip-text text-transparent inline-block"
+              animate={{
+                backgroundPosition: ['0% 50%', '100% 50%', '200% 50%', '0% 50%']
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              style={{ backgroundSize: '300% 100%' }}
+            >
+              Courses
+            </motion.span>
+          </motion.h2>
+          
+          <motion.p 
+            className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto mb-16 leading-relaxed"
+            data-testid="text-courses-description"
+            initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
+            animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+            transition={{ duration: 1.2, delay: 0.8, ease: "easeOut" }}
+          >
+            Experience revolutionary learning through our{" "}
+            <motion.span 
+              className="text-primary font-bold"
+              animate={{
+                textShadow: [
+                  "0 0 0px rgb(59, 130, 246)",
+                  "0 0 30px rgb(59, 130, 246)",
+                  "0 0 0px rgb(59, 130, 246)"
+                ]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              quantum-AI curriculum
+            </motion.span>
+            , designed to transform you from novice to elite system architect through immersive, 
+            next-generation educational experiences.
+          </motion.p>
 
-          {/* Search and Filter Section */}
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          {/* Advanced Search and Filter Section */}
+          <motion.div 
+            className="max-w-5xl mx-auto mb-16"
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1, delay: 1.2 }}
+          >
+            <div className="flex flex-col md:flex-row gap-6 mb-8">
+              <motion.div 
+                className="relative flex-1"
+                whileHover={{ scale: 1.02 }}
+                whileFocus={{ scale: 1.02 }}
+              >
+                <motion.div
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2"
+                  animate={{
+                    rotate: [0, 15, -15, 0],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Search className="h-5 w-5 text-primary" />
+                </motion.div>
                 <Input
-                  placeholder="Search courses, technologies, or topics..."
+                  placeholder="Search neural courses, quantum technologies, or AI topics..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-12 pr-4 py-4 text-lg border-primary/30 focus:border-primary/60 bg-background/50 backdrop-blur-sm font-medium"
                   data-testid="input-search"
                 />
-              </div>
-              <Button variant="outline" className="hover-elevate" data-testid="button-filter">
-                <Filter className="h-4 w-4 mr-2" />
-                Filters
-              </Button>
+                
+                {/* Search field glow effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-primary/10 via-purple-500/10 to-primary/10 rounded-md -z-10"
+                  animate={{
+                    opacity: [0, 0.3, 0],
+                    scale: [1, 1.02, 1]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </motion.div>
+              
+              <motion.div
+                whileHover={{ 
+                  scale: 1.05,
+                  boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)"
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="hover-elevate border-primary/30 hover:border-primary/60 bg-gradient-to-r from-primary/5 to-purple-500/5 font-semibold px-8" 
+                  data-testid="button-filter"
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 180, 360] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Filter className="h-5 w-5 mr-3" />
+                  </motion.div>
+                  Neural Filters
+                </Button>
+              </motion.div>
             </div>
 
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2 justify-center mb-4">
-              {categories.map((category) => (
-                <Badge
+            {/* Advanced Category Filter */}
+            <div className="flex flex-wrap gap-3 justify-center mb-6">
+              {categories.map((category, index) => (
+                <motion.div
                   key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  className="cursor-pointer hover-elevate transition-all duration-200"
-                  onClick={() => setSelectedCategory(category)}
-                  data-testid={`badge-category-${category}`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                  transition={{ duration: 0.6, delay: 1.4 + index * 0.1 }}
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </Badge>
+                  <Badge
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    className={`cursor-pointer hover-elevate transition-all duration-300 px-4 py-2 font-semibold ${
+                      selectedCategory === category 
+                        ? "bg-primary border-primary shadow-lg shadow-primary/30" 
+                        : "border-primary/30 hover:border-primary/60 bg-background/50 backdrop-blur-sm"
+                    }`}
+                    onClick={() => setSelectedCategory(category)}
+                    data-testid={`badge-category-${category}`}
+                  >
+                    <motion.span
+                      animate={selectedCategory === category ? {
+                        textShadow: [
+                          "0 0 0px rgb(255, 255, 255)",
+                          "0 0 10px rgb(255, 255, 255)",
+                          "0 0 0px rgb(255, 255, 255)"
+                        ]
+                      } : {}}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </motion.span>
+                  </Badge>
+                </motion.div>
               ))}
             </div>
 
-            {/* Level Filter */}
-            <div className="flex flex-wrap gap-2 justify-center">
-              {levels.map((level) => (
-                <Badge
+            {/* Advanced Level Filter */}
+            <div className="flex flex-wrap gap-3 justify-center">
+              {levels.map((level, index) => (
+                <motion.div
                   key={level}
-                  variant={selectedLevel === level ? "default" : "secondary"}
-                  className="cursor-pointer hover-elevate transition-all duration-200"
-                  onClick={() => setSelectedLevel(level)}
-                  data-testid={`badge-level-${level.toLowerCase()}`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                  transition={{ duration: 0.6, delay: 2 + index * 0.1 }}
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  {level}
-                </Badge>
+                  <Badge
+                    variant={selectedLevel === level ? "default" : "secondary"}
+                    className={`cursor-pointer hover-elevate transition-all duration-300 px-5 py-2 font-bold ${
+                      selectedLevel === level 
+                        ? "bg-gradient-to-r from-primary to-purple-500 border-0 shadow-lg shadow-primary/30" 
+                        : "border-primary/20 hover:border-primary/50 bg-gradient-to-r from-secondary/50 to-secondary backdrop-blur-sm"
+                    }`}
+                    onClick={() => setSelectedLevel(level)}
+                    data-testid={`badge-level-${level.toLowerCase()}`}
+                  >
+                    <motion.div className="flex items-center gap-2">
+                      {selectedLevel === level && (
+                        <motion.div
+                          animate={{ rotate: [0, 360] }}
+                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                        >
+                          <Zap className="h-3 w-3" />
+                        </motion.div>
+                      )}
+                      <span>{level}</span>
+                    </motion.div>
+                  </Badge>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Courses Grid */}
