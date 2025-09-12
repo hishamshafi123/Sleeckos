@@ -1,0 +1,31 @@
+Generate a single-page static website for "SleeckOS" with a dark-minimal aesthetic (black background, white logo/text). Include a polished Courses section listing Beginner, Intermediate, Advanced. Also implement a production-ready, accessible high-tech signature feature: "Interactive Constellation Reveal".
+
+Requirements for the Constellation Reveal:
+1. Visual: full-width, subtle starfield of ~120 small SVG nodes (dots) in the hero background. Nodes should gently float on load with low opacity.
+2. Interaction: provide two reveal triggers:
+   - Hover/Focus: when the user hovers the hero area, nearby nodes within a 160px radius connect with animated lines and slightly increase brightness.
+   - Reveal button / keyboard: a visible "Reveal" button (and keyboard focusable control: Enter/Space) triggers a 1.2s morph animation where nodes smoothly move and connect to form a crisp, stylized wordmark or phrase: "SLEECKOS" (vector paths). After the reveal, nodes hold the connected form for 4s then gracefully return to the starfield.
+3. Animation quality: use performant SVG transforms and requestAnimationFrame. Lines should draw using stroke-dashoffset animation; node movement should use CSS transforms or GPU-friendly transforms. Include easing and subtle jitter to mimic hand-drawn pen pressure.
+4. Accessibility:
+   - Respect prefers-reduced-motion: if set, skip animations and show a static, high-contrast SVG wordmark in the hero instead.
+   - Provide ARIA roles: the reveal control must be keyboard accessible and labelled: aria-label="Reveal SleeckOS signature".
+   - Provide a text alternative: hidden accessible text announcing "SleeckOS — Learn • Build • Earn".
+5. Performance and fallback:
+   - Implement using inline SVG (no heavy libraries). Keep JS under ~35KB minified; use no external dependencies or, if needed, one tiny animation helper (<8KB).
+   - Provide a static SVG fallback if JS is disabled (preconnected wordmark).
+6. UX polish:
+   - Add a soft blur/light bloom effect behind the formed wordmark for emphasis.
+   - Allow user to re-trigger reveal after 6s cooldown.
+   - Provide a subtle hint: small caption "Hover or press Reveal to discover our signature" that fades after first interaction.
+7. Deliverables:
+   - A responsive HTML/CSS/JS implementation integrated into the SleeckOS single-page template (hero, courses, footer).
+   - Comments explaining how the constellation mapping to glyph paths works and how to swap the revealed word or tweak node count.
+   - README comment at top explaining accessibility toggles and how to disable the feature.
+
+Style notes:
+- Keep typography minimal, modern, Inter font or system fallback.
+- Maintain high contrast: white on black; use small soft accent glows only.
+- Ensure mobile interaction: tap to reveal on touch devices; show static wordmark if the screen width < 420px and prefers-reduced-motion is set.
+
+Output: provide the HTML file, a separate CSS file, and a JS file. Include any small SVG assets inline. Keep code clean, production-ready, and commented for easy customization.
+
