@@ -384,7 +384,6 @@ export default function ConstellationReveal() {
             className="fill-white text-4xl font-bold tracking-wider"
             style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
           >
-            SLEECKOS
           </text>
         </svg>
         <span className="sr-only">SleeckOS — Learn • Build • Earn</span>

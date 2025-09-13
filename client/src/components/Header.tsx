@@ -23,7 +23,7 @@ export default function Header() {
           <motion.img 
             src={logoImage} 
             alt="SleeckOS Logo" 
-            className="h-10 w-auto filter brightness-0 invert drop-shadow-sm"
+            className="h-10 w-auto block object-contain"
             data-testid="img-logo"
             whileHover={{ rotate: [0, -5, 5, 0] }}
             transition={{ duration: 0.6 }}
