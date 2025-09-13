@@ -1,0 +1,61 @@
+Update the SleeckOS single-page site: replace the existing "Courses" heading with a modern, interactive Courses module that lists Level 1 (L1), Level 2 (L2), and Level 3 (L3) and supports selectable sub-courses and dynamic pricing. Output production-ready HTML/CSS/JS (single-page integration or separate files) with clear comments and a small README header describing customization.
+
+Requirements:
+
+1. Structure & Content
+- Replace the Courses section heading with: "Courses — L1 • L2 • L3".
+- Include three primary cards (L1, L2, L3). Each card shows:
+  - Level title (L1 / L2 / L3)
+  - Short tagline
+  - Base price (editable)
+  - Duration
+  - Expand/Collapse control to show sub-courses
+- Populate sub-courses from provided content:
+  - L1 sub-courses: AI Fundamentals; Working with LLMs; Simple Generative Tasks; AI Tools & Apps; Ethics & Safety.
+  - L2 sub-courses: Programming with AI (Python intro); Chatbots & RAG; Advanced Prompting & Automation; AI Agents (Intro); Monetization Skills; Guest Webinars.
+  - L3 sub-courses: Advanced Agents & LangChain; Custom LLMs & RAG Pipelines; AI in Business & Innovation; Performance Evaluation & Hiring.
+- Each sub-course entry must include: title, 1-line description, duration (e.g., 2–4 hours), optional icon, and a checkbox to include/exclude from package.
+
+2. Pricing & Dynamic Calculator (NO PAYMENT)
+- Show editable base price for each level (defaults: L1 ₹7,500; L2 ₹25,000; L3 ₹45,000 — editable in code).
+- Each sub-course can have an adjustable add-on price. Selecting checkboxes updates a visible “Package Summary” panel in real-time:
+  - Items listed (selected level + sub-courses)
+  - Subtotal, discount (if multiple selections — e.g., 10% bundle discount, configurable), estimated total.
+- No payment/checkout integration. “Enroll / Request Info” button opens a pre-filled mailto: link (or shows a contact modal) with a summary of selections.
+
+3. UX / UI Behavior
+- Cards animate gently on expand/collapse (150–320ms). Sub-course checkboxes animate micro-interactions.
+- Desktop layout: course cards left; sticky summary panel on the right. Mobile: cards stacked, summary appears as bottom sheet/modal.
+- Persist user selections in localStorage so returning visitors see prior selections.
+- Add a “Reset selections” control.
+
+4. Accessibility & Intl
+- Fully keyboard accessible (tab order, Enter/Space toggles).
+- Proper semantic markup and aria attributes: expanded/collapsed states, aria-live region for price updates, aria-labels for controls.
+- Respect prefers-reduced-motion: disable non-essential animations if set.
+- Add a language toggle placeholder (EN / മലയാളം) near the section heading. The content may remain English but must be structured so translations can be inserted easily; include data attributes for translation keys.
+
+5. Visual & Theming
+- Keep the site’s dark-minimal aesthetic (black background, white/gray text, subtle accents). Ensure high contrast for readability and accessible font sizes.
+- Use subtle glass-card effects and hover micro-interactions consistent with SleeckOS design.
+- Keep JS minimal and performant (no heavy frameworks). Inline critical CSS; lazy-load non-critical assets. Aim JS < 40KB minified (excluding fonts).
+
+6. Integration with hidden signature (no conflict)
+- Ensure constellation/hero signature feature (Interactive Constellation Reveal) remains functional and unaffected.
+- The Course module must not overlay or interrupt the hero reveal interactions. If the reveal is active, the course summary should remain visible and accessible.
+
+7. Developer/Customization Notes
+- Include comments at top of files explaining where to change: base prices, per-subcourse price, discount rule, durations, language strings, and contact mailto target.
+- Provide a small README comment header describing delivered files, how to edit prices, and how to toggle enabling/disabling localStorage persistence.
+
+8. Deliverables
+- Updated HTML/CSS/JS files integrated into the existing single-page layout (or a single self-contained HTML file plus separate CSS/JS if preferred).
+- Inline comments and a README header describing customization and accessibility fallbacks.
+
+Acceptance criteria:
+- On load, the Courses section shows L1/L2/L3 cards with base prices and an unobtrusive hint: "Select sub-courses to customize your package. Pricing updates live."
+- Selecting sub-courses updates the summary panel and subtotal/total correctly.
+- Enroll/Request Info opens a prefilled email or modal (no payment).
+- Works responsively and is keyboard accessible. Respect reduced-motion settings.
+
+Use the course descriptions above for sub-course copy and keep the tone aligned with SleeckOS: professional, motivating, and concise.
