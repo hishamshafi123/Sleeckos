@@ -1,0 +1,106 @@
+Project: Add modular growth & engagement features to existing "SleeckOS" single-page site.
+Goal: Keep the current UI and functionality intact. Add the following extra elements (modular, togglable, theme-matching) that integrate seamlessly with the site's dark-minimal design and the existing hero/constellation feature.
+
+Deliverables (clear, production-ready):
+- A new folder `/features` with 3 files: `leadmagnet.html` (self-contained component markup), `features.css` (theme-matching styles), and `features.js` (lightweight JS). Also produce a short README header comment inside each file explaining how to integrate into the main site.
+- All code must be accessible, performant, and documented. Use semantic HTML, ARIA attributes, and respect `prefers-reduced-motion`.
+- Keep JS minimal and dependency-free. Target <40KB total JS (minified).
+- Use the site’s existing Inter/system font and black/white palette. Make components visually consistent (glass cards, subtle accent glow).
+- Provide placeholders and configuration comments for email webhook (Netlify / Zapier / n8n), PDF link, Calendly ID, GA4 measurement ID, and Hotjar/Microsoft Clarity ID.
+
+Requirements — Components (each should be a modular `<section id="...">` that can be appended to the page without altering existing DOM structure):
+
+1) Email capture / lead magnet (hero CTA + minimal form)
+- Section id: `lead-magnet`.
+- Visible hero CTA button "Get AI Starter Kit". Clicking opens an inline modal with a 1-field email capture form (email only) + consent checkbox ("Send me the AI Starter Kit PDF and occasional updates").
+- Integration options (configurable at top of JS):
+  a) Netlify Forms or static `mailto:` fallback.
+  b) Optional webhook URL (Zapier / n8n) to POST `{email, source: "AI Starter Kit", timestamp, referrer}`.
+- After successful submission, auto-download or link to `AI_Starter_Kit.pdf` (configurable URL) and show a small success microcopy.
+- Persist email locally (localStorage) to avoid duplicate prompts.
+- Anti-spam: a simple honeypot hidden field and optional reCAPTCHA v2/Invisible hook placeholder.
+- Accessibility: focus trap in modal, labels, error messages, and ARIA-live success message.
+
+2) Clear value-focused hero micro-path (Learn → Build → Earn)
+- Section id: `three-path`.
+- Minimal 3-step visual row or vertical stack (responsive) with icons, short copy and micro-CTAs for L1/L2/L3.
+- Each micro-CTA scrolls to the respective course card (use `document.getElementById('l1-card')` anchor) without changing the layout.
+- Include social proof counters (animated number counters) for: Cohorts run (default 12), Students trained (default 420), Projects completed (default 85). Counters are animated but respect reduced-motion (static if reduced).
+- Provide configuration at top of JS to change counts and labels.
+
+3) Course micro-demos
+- Section id: `micro-demos`.
+- For each level (L1, L2, L3) provide a demo card with:
+  - 60–90s video placeholder (YouTube/Vimeo embed) or animated GIF fallback.
+  - Short caption: "Watch: Prompt → Blog Post" etc.
+- Provide templated embed code and instructions to swap in real YouTube/Vimeo links. Lazy-load video iframe on click to preserve performance.
+- Add a lightweight captions toggle (CC) placeholder and a transcripts download link (optional).
+
+4) Testimonials & outcomes
+- Section id: `testimonials`.
+- Carousel-style (or stacked on mobile) cards of 3–6 testimonials. Each card: short quote, first name & city, optional blurred avatar (use monochrome placeholder). Include an anonymized outcome tag: e.g., "Earned ₹10k/mo freelancing".
+- Include a simple submit-testimonial form that posts to the same webhook as lead magnet (optional). Provide instructions for verifying testimonials before display.
+
+5) Multilingual toggle (EN / മലയാളം)
+- Small language toggle control near Courses heading: `<button id="lang-toggle" data-lang="en">EN / മലയാളം</button>`.
+- Implementation: keep English copy as default, provide `data-i18n-key` attributes on text nodes so translations can be swapped easily.
+- Include an example Malayalam translation file as JSON (small excerpt) and integration code to switch text on click.
+- Include note in README: this system is translation-agnostic and supports more languages via the JSON resource.
+
+6) Contact + Booking (Office hours)
+- Section id: `contact-booking`.
+- Two options:
+  a) Calendly embed placeholder (configurable `CALENDLY_ID`) – show an inline embed modal or a small "Book Office Hour" CTA that opens Calendly in a modal or new tab.
+  b) Basic booking modal fallback form that posts to webhook (name, email, preferred slots, message).
+- Ensure bookings do not conflict with existing hero interactions or overlays. Provide mailto fallback for low-complexity setups.
+
+7) Analytics & tracking (non-invasive)
+- Provide instructions and snippet insertion points for:
+  - GA4 measurement ID (provide example snippet with placeholder `G-XXXXXXX`).
+  - Microsoft Clarity and/or Hotjar snippet (placeholders).
+- Implement a simple privacy/consent banner (small, dismissible) that, when accepted, loads analytics scripts dynamically. If the user declines, scripts are not loaded.
+- Provide `dataLayer` event push on lead magnet submission and enroll request for GTM/GA tracking (sample events included in features.js).
+
+Integration constraints:
+- Do not modify or remove existing site HTML IDs, classes, hero, constellation script, or global CSS variables.
+- Insert modular sections after hero and before the existing Courses section (configurable insertion point in README).
+- CSS classes should be namespaced (e.g., `.sleeck-feat-*`) to avoid collisions.
+- All interactive controls must be keyboard accessible and have aria-labels.
+- Respect `prefers-reduced-motion` and low-power device detection (disable animated counters, complex particle effects, and iframe autoplay).
+
+Styling & Theming:
+- Use the current black background and white/gray type scale. Provide variables at the top of `features.css` (`--bg`, `--fg`, `--muted`, `--accent`) to match the main site theme.
+- Use glass-card style, 12–16px base font, and strong contrast for CTAs.
+- Provide both desktop and mobile responsive layouts. Mobile summary sheet for pricing should not be included (we are not adding pricing integration here), keep it informational.
+
+README & Comments:
+- At the top of each file include a short README comment block:
+  - Where to place the file in the repo.
+  - How to configure webhook URLs, PDF URL, Calendly ID, GA4 ID, and default counters.
+  - How to enable/disable localStorage persistence.
+  - How to integrate translations (where to put the JSON).
+  - How to test forms locally (Netlify Forms configuration example) and how to wire Zapier/n8n webhook to send PDF attachments.
+
+Acceptance Criteria (automatic checks):
+- All components render on desktop & mobile and visually match the dark-minimal theme.
+- Lead magnet form successfully POSTs to a placeholder webhook (provide example cURL command) and triggers a success UI and link to download PDF.
+- Language toggle swaps text content (example Malayalam provided).
+- Calendly embed works with placeholder `CALENDLY_ID` (instructions included).
+- Analytics scripts are only loaded after consent; an example GTAG push fires on lead magnet submission.
+- The new features do not interfere with hero constellation reveal or other existing scripts.
+
+Security & Privacy:
+- Sanitize all user input on client side before sending to webhook (simple regex/email validation) and mention server-side validation is required in README.
+- Do not store emails in plain text in files. localStorage items must be named under `sleeckos_*`.
+
+Final output:
+- Provide the three files (`leadmagnet.html`, `features.css`, `features.js`) plus a `README_FEATURES.md` snippet included at top of `leadmagnet.html` explaining integration steps.
+- Provide example template values for PDF URL, webhook, GA4 ID, and Calendly ID in a clearly-commented `/* CONFIG */` block inside `features.js`.
+
+Tone & UX copy:
+- Use concise, motivating copy consistent with SleeckOS branding: e.g., "Get the AI Starter Kit", "Learn → Build → Earn", "Book Office Hours", "See demo".
+- Keep microcopy in English by default and include Malayalam translations for key CTAs in the example JSON.
+
+Important: ensure the generator warns where server-side configuration (Netlify, zapier, sending PDFs) is required. The generated code should run locally in dev with mailto fallback and form-submission mocks.
+
+--- End of prompt for Replit / code generator.

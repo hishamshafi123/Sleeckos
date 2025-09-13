@@ -1,5 +1,6 @@
 import { motion, useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
+import type { ComponentType } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,7 +40,7 @@ interface SubCourse {
   description: string
   duration: string
   price: number
-  icon: React.ComponentType<{ className?: string }>
+  icon: ComponentType<{ className?: string }>
 }
 
 interface CourseLevel {
@@ -376,20 +377,21 @@ export default function Courses() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2 }}
-                  className={`flex items-start gap-3 p-3 rounded-lg border transition-all duration-200 ${
+                  className={`flex items-start gap-3 p-3 rounded-lg border transition-all duration-200 cursor-pointer ${
                     isSelected 
                       ? 'bg-primary/10 border-primary/30' 
                       : 'bg-card/50 border-border hover:bg-card'
                   }`}
+                  onClick={() => toggleSubCourse(subCourse.id)}
                 >
                   <Checkbox
                     checked={isSelected}
-                    onCheckedChange={() => toggleSubCourse(subCourse.id)}
-                    className="mt-1"
+                    onChange={() => toggleSubCourse(subCourse.id)}
+                    className="mt-1 pointer-events-auto"
                     data-testid={`checkbox-${subCourse.id}`}
                     aria-describedby={`desc-${subCourse.id}`}
                   />
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 pointer-events-none">
                     <div className="flex items-center gap-2 mb-1">
                       <subCourse.icon className="h-4 w-4 text-primary" />
                       <h4 className="font-semibold text-sm">{subCourse.title}</h4>
